@@ -21,19 +21,26 @@ include('./config.php');
         </div>
         <div id="centers" class="space-y-4">
             <?php
-
             try {
-
                 $stmt = $conn->query('SELECT id, city_name FROM `city-card-details`');
                 $centers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 foreach ($centers as $center) {
+                    // Check if content already exists for this center
+                    $centerId = htmlspecialchars($center['id']);
+                    $contentStmt = $conn->prepare('SELECT COUNT(*) FROM `center_content` WHERE center_id = ?');
+                    $contentStmt->execute([$centerId]);
+                    $contentExists = $contentStmt->fetchColumn() > 0;
+
+                    $buttonLabel = $contentExists ? 'Edit Content' : 'Add Content';
+                    $buttonClass = $contentExists ? 'bg-green-500 hover:bg-green-700' : 'bg-blue-500 hover:bg-blue-700';
+
                     echo '
-                            <div class="bg-gray-800 p-4 rounded flex justify-between items-center center-item">
-                                <span>' . htmlspecialchars($center['city_name']) . ' (ID: ' . htmlspecialchars($center['id']) . ')</span>
-                                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded add-content-btn" data-id="' . htmlspecialchars($center['id']) . '">Add Content</button>
-                            </div>
-                        ';
+                        <div class="bg-gray-800 p-4 rounded flex justify-between items-center center-item">
+                            <span>' . htmlspecialchars($center['city_name']) . ' (ID: ' . $centerId . ')</span>
+                            <button class="' . $buttonClass . ' text-white font-bold py-2 px-4 rounded content-btn" data-id="' . $centerId . '">' . $buttonLabel . '</button>
+                        </div>
+                    ';
                 }
             } catch (PDOException $e) {
                 echo 'Database error: ' . htmlspecialchars($e->getMessage());
@@ -44,9 +51,14 @@ include('./config.php');
 
     <script>
         $(document).ready(function() {
-            $('.add-content-btn').click(function() {
+            $('.content-btn').click(function() {
                 const centerId = $(this).data('id');
-                window.location.href = `content-operations/add_content.php?id=${centerId}`;
+                const buttonLabel = $(this).text().trim();
+                if (buttonLabel === 'Edit Content') {
+                    window.location.href = `content-operations/edit_content.php?id=${centerId}`;
+                } else {
+                    window.location.href = `content-operations/add_content.php?id=${centerId}`;
+                }
             });
 
             $('#search').on('keyup', function() {
