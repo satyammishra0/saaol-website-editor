@@ -1,3 +1,16 @@
+<?php
+include('../../config.php');
+
+
+$id = $_GET['id'];
+$query = "SELECT * FROM `city-card-details` WHERE `id`= :id";
+$prepQuery = $conn->prepare($query);
+$prepQuery->bindParam(':id', $id);
+$prepQuery->execute();
+
+$result = $prepQuery->fetch(PDO::FETCH_ASSOC);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +18,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <title>ADD City Details</title>
+    <title>Edit City Details</title>
     <style>
         body {
             margin: 0;
@@ -76,56 +89,57 @@
 
     <div class="container">
         <div class="form-container">
-            <h2 class="text-2xl font-bold mb-4 text-center text-blue-500">Add City Details</h2>
-            <form action="./processing/add.php" method="post">
+            <h2 class="text-2xl font-bold mb-4 text-center text-blue-500">Edit City Details</h2>
+            <form action="./contact-details-processing/edit.php" method="post">
                 <!-- Id field (hidden) -->
-                <input type="hidden" name="id" value="">
-                <!-- You can replace "1" with the actual ID from your database -->
+                <input type="hidden" name="id" value="<?= $_GET['id']; ?>">
 
                 <!-- State Name field -->
                 <label for="statename" class="form-label">State Name:</label>
-                <input type="text" id="statename" name="statename" class="form-input" required>
+                <input type="text" id="statename" name="statename" class="form-input" value="<?= $result['state_name']; ?>" required>
 
                 <!-- City Name field -->
                 <label for="cityname" class="form-label">City Name:</label>
-                <input type="text" id="cityname" name="cityname" class="form-input" required>
+                <input type="text" id="cityname" name="cityname" class="form-input" value="<?= $result['city_name']; ?>" required>
 
                 <!-- City Address field -->
                 <label for="cityaddress" class="form-label">City Address:</label>
-                <input type="text" id="cityaddress" name="cityaddress" class="form-input" required>
+                <input type="text" id="cityaddress" name="cityaddress" class="form-input" value="<?= $result['city_addr']; ?>" required>
 
                 <!-- Phone Number field -->
                 <label for="phoneno" class="form-label">Phone Number:</label>
-                <input type="text" id="phoneno" name="phoneno" class="form-input" required>
+                <input type="text" id="phoneno" name="phoneno" class="form-input" value="<?= $result['phone_no']; ?>" required>
 
                 <!-- Iframe URL field -->
                 <label for="centeremail" class="form-label">Center Email:</label>
-                <input type="text" id="centeremail" name="centeremail" class="form-input" required>
+                <input type="text" id="centeremail" name="centeremail" class="form-input" value="<?= $result['center_email']; ?>" required>
 
-                <!-- Iframe URL field -->
-                <label for="centerCCemail" class="form-label">Center CC Email:</label>
-                <input type="text" id="centerCCemail" name="centerCCemail" class="form-input">
+                <!-- CC Email field -->
+                <label for="centeremail" class="form-label">Center CC Email:</label>
+                <input type="text" id="centeremail" name="centerCCemail" class="form-input" value="<?= $result['cc_email']; ?>" required>
+
 
                 <!-- Iframe URL field -->
                 <label for="iframeurl" class="form-label">Iframe URL:</label>
-                <input type="text" id="iframeurl" name="iframeurl" class="form-input" required>
+                <input type="text" id="iframeurl" name="iframeurl" class="form-input" value="<?= $result['iframe_url']; ?>" required>
 
                 <!-- Iframe Title field -->
                 <label for="iframetitle" class="form-label">Iframe Title:</label>
-                <input type="text" id="iframetitle" name="iframetitle" class="form-input" required>
+                <input type="text" id="iframetitle" name="iframetitle" class="form-input" value="<?= $result['iframe_title']; ?>" required>
 
                 <!-- Center URL field -->
                 <label for="centerurl" class="form-label">Center URL:</label>
-                <input type="text" id="centerurl" name="centerurl" class="form-input" required>
+                <input type="text" id="centerurl" name="centerurl" class="form-input" value="<?= $result['center_url']; ?>" required>
 
                 <!-- Book Appointment URL field -->
                 <label for="appointmenturl" class="form-label">Book Appointment URL:</label>
-                <input type="text" id="appointmenturl" name="appointmenturl" class="form-input" required>
+                <input type="text" id="appointmenturl" name="appointmenturl" class="form-input" value="<?= $result['center_appointment_url']; ?>" required>
 
                 <!-- Submit button -->
-                <button type="submit" class="form-button">Add Center</button>
+                <button type="submit" class="form-button">Update Details</button>
             </form>
 
+            <!-- Display error messages if any -->
             <div class="form-error">
                 <?php
                 if (isset($_GET['error'])) {

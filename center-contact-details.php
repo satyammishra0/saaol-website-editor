@@ -77,7 +77,7 @@ $queryPrep->execute();
         <div class="flex justify-between items-center p-4 bg-gray-700 rounded shadow-lg" style="border: 1px solid #ddd;">
             <div class="text-white text-2xl font-bold">All Center Pages</div>
             <div>
-                <a href="add-city-details.php" class="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">Add Center</a>
+                <a href="contact-operations/add-contact-details.php" class="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">Add Center</a>
             </div>
         </div>
 
@@ -114,7 +114,7 @@ $queryPrep->execute();
                                     <td class="break-all"><?= $result['center_email'] ?></td>
                                     <td class="break-all"><?= $result['cc_email'] ?></td>
                                     <td class="action-th break-all">
-                                        <a class="action-btn edit-btn bg-blue-500" href="edit-city-details.php?id=<?= $result['id'] ?>">Edit</a>
+                                        <a class="action-btn edit-btn bg-blue-500" href="contact-operations/edit-contact-details.php?id=<?= $result['id'] ?>">Edit</a>
                                         <a class="action-btn edit-email-btn bg-blue-100 text-black" id="add-email-btn" onclick="editEmail(' ', <?= $result['id'] ?>)">
                                             <?php
                                             if ($result['center_email'] != "") {
@@ -163,7 +163,7 @@ $queryPrep->execute();
 
         function addEmailDb(enteredEmail, id) {
             $.ajax({
-                url: './processing/insert-email.php',
+                url: './contact-details-processing/insert-email.php',
                 method: 'post',
                 data: {
                     email: enteredEmail,
@@ -187,7 +187,7 @@ $queryPrep->execute();
 
         function deleteCity(id) {
             $.ajax({
-                url: './processing/delete.php',
+                url: './contact-details-processing/delete.php',
                 method: 'POST',
                 data: {
                     id: id
@@ -211,7 +211,7 @@ $queryPrep->execute();
 
         function addCCEmail(newCCEmail, id) {
             $.ajax({
-                url: './processing/insert-cc.php',
+                url: './contact-details-processing/insert-cc.php',
                 method: 'post',
                 data: {
                     cc_email: newCCEmail,

@@ -4,10 +4,8 @@ include('../config.php');
 
 
 
-
 if (isset($_POST['statename']) && isset($_POST['cityname']) && isset($_POST['cityaddress']) && isset($_POST['phoneno']) && isset($_POST['centeremail']) && isset($_POST['iframeurl']) && isset($_POST['centerurl']) && isset($_POST['appointmenturl'])) {
 
-    $id = trim($_POST['id']);
     $stateName = trim($_POST['statename']);
     $cityName = trim($_POST['cityname']);
     $cityAddress = trim($_POST['cityaddress']);
@@ -23,27 +21,20 @@ if (isset($_POST['statename']) && isset($_POST['cityname']) && isset($_POST['cit
     if (!empty($cityName) && !empty($cityAddress) && !empty($cityPhone) && !empty($iframeUrl) && !empty($iframeTitle) && !empty($centerUrl) && !empty($centerAppoitmentUrl)) {
 
         if (filter_var($centerEmail, FILTER_VALIDATE_EMAIL)) {
-            $query = "UPDATE `city-card-details` SET 
-            `state_name` = :stateName,
-            `city_name` = :cityName,
-            `city_addr` = :cityAddress,
-            `phone_no` = :cityPhone, 
-            `center_email` = :centerEmail,
-            `cc_email` = :centerCCemail,
-            `iframe_url` = :iframeUrl,
-            `iframe_title` = :iframeTitle,
-            `center_url` = :centerUrl,  
-            `center_appointment_url` = :centerAppointmentUrl   WHERE `id` = :id";
+            $query =
+                "
+            INSERT INTO `city-card-details` (`state_name`, `city_name`, `city_addr`, `phone_no`, `center_email`, `cc_email` ,`iframe_url`, `iframe_title`, `center_url`, `center_appointment_url`)  VALUES
+            (:stateName, :cityName, :cityAddress, :cityPhone,  :centerEmail, :cc_email  , :iframeUrl, :iframeTitle, :centerUrl, :centerAppointmentUrl );
+            ";
 
             $stmt = $conn->prepare($query);
 
-            $stmt->bindParam(':id', $id);
             $stmt->bindParam(':stateName', $stateName);
             $stmt->bindParam(':cityName', $cityName);
             $stmt->bindParam(':cityAddress', $cityAddress);
             $stmt->bindParam(':cityPhone', $cityPhone);
             $stmt->bindParam(':centerEmail', $centerEmail);
-            $stmt->bindParam(':centerCCemail', $centerCCemail);
+            $stmt->bindParam(':cc_email', $centerCCemail);
             $stmt->bindParam(':iframeUrl', $iframeUrl);
             $stmt->bindParam(':iframeTitle', $iframeTitle);
             $stmt->bindParam(':centerUrl', $centerUrl);
@@ -51,24 +42,24 @@ if (isset($_POST['statename']) && isset($_POST['cityname']) && isset($_POST['cit
 
 
             if ($stmt->execute()) {
-                $success = "Details Updated Successfully";
-                header("location:../city-details.php");
+                $success = "Details Added Successfully";
+                header("location:../center-contact-details.php");
             } else {
                 $error = "Some error occured ";
-                header("location:../edit-city-details.php?error=$error&id=$id");
+                header("location:../contact-operations/add-contact-details.php?error=$error");
             }
         } else {
             $error = "Please enter valid Email";
-            header("location:../edit-city-details.php?error=$error&id=$id");
+            header("location:../contact-operations/add-contact-details.php?error=$error");
         }
     }
 
     // If any details are empty
     else {
         $error = "Please fill all the details 1";
-        header("location:../edit-city-details.php?error=$error&id=$id");
+        header("location:../contact-operations/add-contact-details.php?error=$error");
     }
 } else {
     $error = "Please fill all the details 2";
-    header("location:../edit-city-details.php?error=$error&id=$id");
+    header("location:../contact-operations/add-contact-details.php?error=$error");
 }

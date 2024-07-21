@@ -46,7 +46,7 @@ include('./config.php');
         $(document).ready(function() {
             $('.add-content-btn').click(function() {
                 const centerId = $(this).data('id');
-                window.location.href = `add_content.php?id=${centerId}`;
+                window.location.href = `content-operations/add_content.php?id=${centerId}`;
             });
 
             $('#search').on('keyup', function() {
